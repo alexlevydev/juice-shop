@@ -1,0 +1,33 @@
+# Syntax
+# name: Workflow_Name (Appears in UI)
+# on: (Can be push/pull_request/workflow_dispatch)
+
+
+name: Security Scans (SAST, SCA, Secrets)
+on: [push, pull_request,workflow_dispatch]
+
+jobs:
+  
+  # SAST (Static Application Security Testing)
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3  # Get the code
+      - name: Run SAST
+        run: [tool command]  # What to run
+  
+  # SCA (Software Composition Analysis - Dependency Scanning)
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses:
+      - name:
+        run:
+  
+  # Secrets Scanning
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses:
+      - name:
+        run:
