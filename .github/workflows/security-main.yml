@@ -4,7 +4,11 @@
 
 
 name: Security Scans (SAST, SCA, Secrets)
-on: [push, pull_request,workflow_dispatch]
+on: 
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   
@@ -12,22 +16,22 @@ jobs:
   sast:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Get the code
-      - name: Run SAST
-        run: [tool command]  # What to run
+      - name: 'Run SAST'
+      - uses: .github/workflows/scans/sast.yml # Get the code
+        run:
   
   # SCA (Software Composition Analysis - Dependency Scanning)
   sca:
     runs-on: ubuntu-latest
     steps:
-      - uses:
-      - name:
+      - name: 'Run SCA'
+      - uses: .github/workflows/scans/sca.yml
         run:
   
   # Secrets Scanning
   secrets:
     runs-on: ubuntu-latest
     steps:
-      - uses:
-      - name:
+      - name: 'Run Secrets'
+      - uses: .github/workflows/scans/secrets.yml
         run:

@@ -1,0 +1,98 @@
+name: 1 - SAST (Static Application Security Testing)
+
+on:
+    # Allows manual trigger via GitHub Actions UI
+    workflow_dispatch:
+    # Allows file to be called from other files    
+    workflow_call:
+
+jobs:
+    
+    SAST-CodeQL:
+        name: 'SAST: CodeQL'
+        uses: .github/workflows/scans/configs/codeql.yml
+        runs-on: ubuntu-latest
+        permissions:
+            # Read access to repo actions           
+            actions: read
+            # Read access to repo contents           
+            contents: read
+            # Read access to repo PRs
+            pull-requests: read
+            # Read access to repo issues
+            issues: read
+            # Write access to security events (Upload SARIF output)
+            security-events: write
+        strategy:
+            # Allows the continuation of action if this job fails
+            fail-fast: false
+            # List of project languages. Can also be written as [lang1, lang2, lang3]
+            matrix:
+                language:
+                    - typescript
+                    - javascript
+                    - html
+                    - scss
+                    - solidity
+                    - pug
+        steps:
+            # Get a copy of the repo's code
+            - name: Checkout repository
+            # Uses the "checkout" action, specifically version 4
+            # Performs 'git clone' operation into runner's working directory ($GITHUB_WORKSPACE)
+            # By default, only fetches the single commit that triggered the workflow
+              uses: actions/checkout@v4
+
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v2
+
+            - name: Run CodeQL Analysis
+              uses: github/codeql-action/analyze@v2
+              # Performs CodeQL analysis using list of project languages
+              with:
+                category: "/language:${{matrix.language}}"
+
+            # CodeQL native artifact/SARIF upload - Makes visible in project security tab
+            - name: Upload CodeQL SARIF results
+              uses: github/codeql-action/upload-sarif@v3
+              # Run even if previous steps failed
+              if: always()
+              with:
+                # Path to CodeQL-generated SARIF file
+                sarif_file: codeql.sarif
+                # Category to organize findings in Security tab
+                category: codeql
+
+            # GitHub Actions native artifact upload
+            - name: Upload CodeQL artifact(s)
+              uses: actions/upload-artifact@v4
+
+    SAST-Semgrep:
+        name: 'SAST: Semgrep'
+        uses: .github/workflows/scans/configs/semgrep.yml
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            pull-requests: read
+            issues: read
+            security-events: write
+        container:
+            # Docker image for Semgrep (formerly returntocorp/semgrep)
+            image: semgrep/semgrep
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Initialize Semgrep
+              uses:
+                
+            - name: Upload Semgrep SARIF results
+              uses: github/codeql-action/upload-sarif@v3
+              if: always()
+              with:
+                sarif_file: semgrep.sarif
+                category: semgrep
+
+            - name: Upload Semgrep artifact(s)
+              uses: actions/upload-artifact@v4

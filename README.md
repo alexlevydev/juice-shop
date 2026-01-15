@@ -42,6 +42,7 @@ For a detailed introduction, full list of features and architecture overview ple
     - [Vagrant](#vagrant)
 - [Demo](#demo)
 - [Documentation](#documentation)
+    - [Security CI Pipeline](#security-ci-pipeline)
     - [Node.js version compatibility](#nodejs-version-compatibility)
     - [Troubleshooting](#troubleshooting)
     - [Official companion guide](#official-companion-guide)
@@ -123,6 +124,50 @@ Feel free to have a look at the latest version of OWASP Juice Shop:
 > guaranteed uptime! Guaranteed stern looks if you break it!
 
 ## Documentation
+
+### Security CI Pipeline
+
+This is the reason you're here. In this section, I'll explain the changes I've made to this fork of juice-shop, and the thinking behind my decisions while I worked on this project.
+
+The objective of this challenge was to, 
+
+> "Fork OWASP Juice Shop and implement a GitHub Actions pipeline that runs open-source security scans in CI. The goal is to demonstrate you can design and implement automated security jobs with good engineering hygiene and secure CI practices."
+
+Per the brief, my instructions were to:
+1. Fork the OWASP Juice Shop repo into your own GitHub account.
+2. Add GitHub Actions workflows that run:
+   1. SAST (static analysis)
+   2. Dependency scanning (SCA)
+   3. Secrets scanning
+
+As a result, my deliverables (what must exist in the repo) were:
+1. Workflows
+   - In .gthub/workflows/ include at least security-main.yml
+2. Documentation
+   - Update READEME.md with a section like "Security CI Pipeline" including:
+      - How to run scans
+      - Where to find artifacs/SARIF results
+      - Any gating policy (fail build on High/Critical, etc.) and why (optional)
+3. Minimal configuration for tools
+   - If your tools need config:
+      - store configs under something like security/ (e.g., security/semgrep.yml)
+         - Or leverage Docker images
+      - Follow secure coding standards
+
+**DISCLAIMER**: I prompted Claude Sonnet 4.5 and GPT-5 to assist me with this challenge, mainly to
+- Deconstruct the fundamental concepts relevant to the challenge
+- Explain the structure and syntax behind YAML files
+- Provide examples relevant to specific tools
+
+In other words, I used AI not to *speedrun* the challenge, but to educate myself on CI/CD. This documentation should be the gauge on how much more I have to learn.
+
+#### 1. How to run scans
+
+Within the .github/workflows folder of this project resides the core of the GitHub actions pipeline: [security-main.yml](.github/workflows/security-main.yml) This file contains 3 separate jobs for each workflow: SAST, SCA, and secrets scanning.
+
+#### 2. Where to find artifacs/SARIF results
+
+#### 3. Any gating policy (fail build on High/Critical, etc.) and why (optional)
 
 ### Node.js version compatibility
 
